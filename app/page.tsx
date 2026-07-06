@@ -176,7 +176,7 @@ export default function Home() {
               Norge - England
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/86">
-              Legg inn kampens beste spådommer og litt landslagshistorikk før klokken 23.00.
+              Legg inn kampens beste spådommer og de små rare kampøyeblikkene før klokken 23.00.
               Når kampen starter låses tipsene, og poengtavlen oppdateres etter hvert som fasiten fylles inn.
             </p>
           </div>
@@ -406,6 +406,18 @@ function QuestionField({
           pattern="\\d{1,2}-\\d{1,2}"
           className="h-11 min-w-0 rounded-md border border-[#cfc7b7] bg-white px-3 text-base outline-none transition focus:border-[#1c7c54] disabled:bg-[#ece8dd]"
           placeholder={allowBlank ? "Ikke avgjort" : "2-1"}
+        />
+      )}
+
+      {question.type === "text" && (
+        <input
+          value={String(value ?? "")}
+          disabled={disabled}
+          required={!allowBlank}
+          onChange={(event) => onChange(event.target.value)}
+          maxLength={80}
+          className="h-11 min-w-0 rounded-md border border-[#cfc7b7] bg-white px-3 text-base outline-none transition focus:border-[#1c7c54] disabled:bg-[#ece8dd]"
+          placeholder={allowBlank ? "Ikke avgjort" : "Spillernavn"}
         />
       )}
 

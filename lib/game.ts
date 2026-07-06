@@ -7,7 +7,7 @@ export type Question = {
   id: string;
   label: string;
   shortLabel: string;
-  type: "select" | "number" | "score";
+  type: "select" | "number" | "score" | "text";
   points: number;
   options?: Option[];
   helper?: string;
@@ -41,14 +41,34 @@ export type LeaderboardRow = Entry & {
 export const DEADLINE_ISO = "2026-07-11T23:00:00+02:00";
 export const ADMIN_CODE = "norge22";
 
+const yesNoOptions: Option[] = [
+  { value: "yes", label: "Ja" },
+  { value: "no", label: "Nei" },
+];
+
+const teamOrNoneOptions: Option[] = [
+  { value: "norway", label: "Norge" },
+  { value: "england", label: "England" },
+  { value: "none", label: "Det blir ingen" },
+];
+
+const scoreParts = ["0", "1", "2", "3", "4+"];
+const finalScoreOptions: Option[] = scoreParts.flatMap((norway) =>
+  scoreParts.map((england) => ({
+    value: `${norway}-${england}`,
+    label: `Norge ${norway} - England ${england}`,
+  }))
+);
+
 export const questions: Question[] = [
   {
     id: "finalScore",
-    label: "Sluttresultat",
+    label: "Hva blir sluttresultatet?",
     shortLabel: "Resultat",
-    type: "score",
+    type: "select",
     points: 6,
-    helper: "Riktig resultat gir 6 poeng. Riktig vinner/uavgjort gir 2 poeng.",
+    options: finalScoreOptions,
+    helper: "Velg antall mål til Norge og England. Riktig resultat gir 6 poeng. Riktig vinner/uavgjort gir 2 poeng.",
   },
   {
     id: "firstGoal",
@@ -56,86 +76,74 @@ export const questions: Question[] = [
     shortLabel: "Første mål",
     type: "select",
     points: 3,
-    options: [
-      { value: "norway", label: "Norge" },
-      { value: "england", label: "England" },
-      { value: "none", label: "Ingen mål" },
-    ],
+    options: teamOrNoneOptions,
   },
   {
-    id: "norwayOpenPlayGoal",
-    label: "Scorer Norge i åpent spill?",
-    shortLabel: "Norsk åpent spill",
-    type: "select",
-    points: 3,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
-  },
-  {
-    id: "hairTie",
-    label: "Ryker kampens mest omtalte hårstrikk?",
-    shortLabel: "Strikken",
-    type: "select",
-    points: 3,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
-  },
-  {
-    id: "norwaySetPiece",
-    label: "Scorer Norge etter dødball?",
-    shortLabel: "Norsk dødball",
-    type: "select",
-    points: 3,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
-  },
-  {
-    id: "englandSetPiece",
-    label: "Scorer England etter dødball?",
-    shortLabel: "Engelsk dødball",
-    type: "select",
-    points: 3,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
-  },
-  {
-    id: "totalCorners",
-    label: "Antall cornere totalt",
-    shortLabel: "Cornere",
-    type: "number",
-    points: 4,
-    helper: "Riktig antall gir 4 poeng. Bom med 1 gir 2 poeng.",
-  },
-  {
-    id: "redCard",
-    label: "Kommer det rødt kort?",
-    shortLabel: "Rødt kort",
+    id: "extraTime",
+    label: "Blir det ekstraomganger?",
+    shortLabel: "Ekstraomganger",
     type: "select",
     points: 2,
+    options: yesNoOptions,
+  },
+  {
+    id: "penaltyShootout",
+    label: "Blir det straffesparkkonkurranse?",
+    shortLabel: "Straffekonk",
+    type: "select",
+    points: 2,
+    options: yesNoOptions,
+  },
+  {
+    id: "haalandGoals",
+    label: "Hvor mange mål scorer Erling Braut Haaland?",
+    shortLabel: "Haaland mål",
+    type: "select",
+    points: 4,
     options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
+      { value: "0", label: "0" },
+      { value: "1", label: "1" },
+      { value: "2", label: "2" },
+      { value: "3", label: "3" },
+      { value: "4+", label: "4+" },
     ],
+  },
+  {
+    id: "odegaardAssist",
+    label: "Får Martin Ødegaard en målgivende pasning?",
+    shortLabel: "Ødegaard assist",
+    type: "select",
+    points: 2,
+    options: yesNoOptions,
   },
   {
     id: "firstYellow",
-    label: "Hvem får første gule kort?",
+    label: "Hvilket lag får kampens første gule kort?",
     shortLabel: "Første gule",
     type: "select",
     points: 2,
+    options: teamOrNoneOptions,
+  },
+  {
+    id: "totalYellowCards",
+    label: "Hvor mange gule kort blir det totalt?",
+    shortLabel: "Gule kort",
+    type: "select",
+    points: 3,
     options: [
-      { value: "norway", label: "Norge" },
-      { value: "england", label: "England" },
-      { value: "none", label: "Ingen gule" },
+      { value: "1", label: "1" },
+      { value: "2", label: "2" },
+      { value: "3", label: "3" },
+      { value: "4+", label: "4+" },
     ],
+  },
+  {
+    id: "redCard",
+    label: "Blir det rødt kort?",
+    shortLabel: "Rødt kort",
+    type: "select",
+    points: 2,
+    options: yesNoOptions,
   },
   {
     id: "halftimeLeader",
@@ -151,154 +159,95 @@ export const questions: Question[] = [
   },
   {
     id: "penalty",
-    label: "Blir det straffe i kampen?",
+    label: "Blir det dømt minst ett straffespark i kampen?",
     shortLabel: "Straffe",
     type: "select",
     points: 2,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
+    options: yesNoOptions,
   },
   {
-    id: "commentatorChaos",
-    label: "Sier noen 'typisk engelsk' på sendingen?",
-    shortLabel: "Typisk engelsk",
+    id: "bitten",
+    label: "Blir noen bitt i løpet av kampen?",
+    shortLabel: "Biting",
     type: "select",
     points: 2,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
+    options: yesNoOptions,
   },
   {
-    id: "extraTimeDrama",
-    label: "Skjer det noe avgjørende etter 85. minutt?",
-    shortLabel: "Sluttdrama",
+    id: "norwayGoalAfter80",
+    label: "Scorer Norge etter det 80. spilleminutt?",
+    shortLabel: "Norge 80+",
     type: "select",
     points: 3,
+    options: yesNoOptions,
+  },
+  {
+    id: "haalandHair",
+    label: "Tar Haaland ut strikken i løpet av kampen?",
+    shortLabel: "Strikken",
+    type: "select",
+    points: 3,
+    options: yesNoOptions,
+  },
+  {
+    id: "governmentShown",
+    label: "Vises noen fra den norske regjeringen på tribunen?",
+    shortLabel: "Regjeringen",
+    type: "select",
+    points: 2,
+    options: yesNoOptions,
+  },
+  {
+    id: "royalFamilyShown",
+    label: "Vises noen fra den norske kongefamilien på tribunen?",
+    shortLabel: "Kongefamilien",
+    type: "select",
+    points: 2,
+    options: yesNoOptions,
+  },
+  {
+    id: "totalGoals",
+    label: "Hvor mange mål blir det totalt i kampen?",
+    shortLabel: "Mål totalt",
+    type: "select",
+    points: 4,
     options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
+      { value: "0", label: "0" },
+      { value: "1", label: "1" },
+      { value: "2", label: "2" },
+      { value: "3", label: "3" },
+      { value: "4", label: "4" },
+      { value: "5", label: "5" },
+      { value: "6", label: "6" },
+      { value: "7", label: "7" },
+      { value: "8", label: "8" },
+      { value: "9", label: "9" },
+      { value: "10+", label: "10+" },
     ],
   },
   {
-    id: "varMoment",
-    label: "Blir det en tydelig VAR-situasjon?",
+    id: "varSituation",
+    label: "Blir det en VAR-situasjon?",
     shortLabel: "VAR",
     type: "select",
     points: 2,
-    options: [
-      { value: "yes", label: "Ja" },
-      { value: "no", label: "Nei" },
-    ],
+    options: yesNoOptions,
   },
   {
-    id: "firstGoalMinute",
-    label: "Når kommer første mål?",
-    shortLabel: "Første mål min.",
+    id: "englandGoalDisallowed",
+    label: "Får England et mål annullert?",
+    shortLabel: "England annullert",
     type: "select",
     points: 3,
-    options: [
-      { value: "0-15", label: "0-15 min" },
-      { value: "16-30", label: "16-30 min" },
-      { value: "31-45", label: "31-45 min" },
-      { value: "46-60", label: "46-60 min" },
-      { value: "61-75", label: "61-75 min" },
-      { value: "76-90", label: "76-90+ min" },
-      { value: "none", label: "Ingen mål" },
-    ],
+    options: yesNoOptions,
   },
   {
-    id: "historyNorwayWorldCup",
-    label: "Hvilket år vant Norges kvinnelandslag VM?",
-    shortLabel: "Norge VM-gull",
-    type: "select",
-    points: 2,
-    options: [
-      { value: "1995", label: "1995" },
-      { value: "1999", label: "1999" },
-      { value: "2000", label: "2000" },
-      { value: "2007", label: "2007" },
-    ],
-  },
-  {
-    id: "historyBrazil98Penalty",
-    label: "Hvem scoret Norges straffe mot Brasil i VM 1998?",
-    shortLabel: "98-straffen",
-    type: "select",
-    points: 2,
-    options: [
-      { value: "rekdal", label: "Kjetil Rekdal" },
-      { value: "flo", label: "Tore Andre Flo" },
-      { value: "solskjaer", label: "Ole Gunnar Solskjaer" },
-      { value: "riise", label: "John Arne Riise" },
-    ],
-  },
-  {
-    id: "historyNorwayOlympics",
-    label: "Hvilket år tok Norges kvinnelandslag OL-gull?",
-    shortLabel: "OL-gull",
-    type: "select",
-    points: 2,
-    options: [
-      { value: "1996", label: "1996" },
-      { value: "2000", label: "2000" },
-      { value: "2004", label: "2004" },
-      { value: "2012", label: "2012" },
-    ],
-  },
-  {
-    id: "historyEnglandNickname",
-    label: "Hva kalles Englands kvinnelandslag?",
-    shortLabel: "England-kallenavn",
-    type: "select",
-    points: 2,
-    options: [
-      { value: "lionesses", label: "Lionesses" },
-      { value: "roses", label: "Roses" },
-      { value: "threeQueens", label: "Three Queens" },
-      { value: "albion", label: "Albion" },
-    ],
-  },
-  {
-    id: "historyEnglandEuro",
-    label: "Hvilket mesterskap vant England på hjemmebane i 2022?",
-    shortLabel: "England 2022",
-    type: "select",
-    points: 2,
-    options: [
-      { value: "euro", label: "EM" },
-      { value: "worldCup", label: "VM" },
-      { value: "olympics", label: "OL" },
-      { value: "nationsLeague", label: "Nations League" },
-    ],
-  },
-  {
-    id: "historyNorwayKit",
-    label: "Hvilken farge forbinder vi mest med Norges hjemmedrakt?",
-    shortLabel: "Norsk drakt",
-    type: "select",
-    points: 1,
-    options: [
-      { value: "red", label: "Rød" },
-      { value: "blue", label: "Blå" },
-      { value: "white", label: "Hvit" },
-      { value: "black", label: "Svart" },
-    ],
-  },
-  {
-    id: "historyEnglandKit",
-    label: "Hvilken farge forbinder vi mest med Englands hjemmedrakt?",
-    shortLabel: "Engelsk drakt",
-    type: "select",
-    points: 1,
-    options: [
-      { value: "white", label: "Hvit" },
-      { value: "red", label: "Rød" },
-      { value: "blue", label: "Blå" },
-      { value: "green", label: "Grønn" },
-    ],
+    id: "playerOfTheMatch",
+    label: "Hvem blir banens beste spiller?",
+    shortLabel: "Banens beste",
+    type: "text",
+    points: 5,
+    helper: "Skriv spillerens navn. Det holder at fasit og tips matcher samme navn.",
   },
 ];
 
@@ -323,6 +272,8 @@ export function normalizeAnswers(input: unknown) {
       answers[question.id] = typeof value === "string" && /^\d{1,2}-\d{1,2}$/.test(value.trim())
         ? value.trim()
         : "";
+    } else if (question.type === "text") {
+      answers[question.id] = typeof value === "string" ? value.trim().slice(0, 80) : "";
     } else {
       const optionValues = new Set(question.options?.map((option) => option.value));
       answers[question.id] = typeof value === "string" && optionValues.has(value) ? value : "";
@@ -382,6 +333,11 @@ function scoreQuestion(question: Question, guess: string | number | null, actual
     return { questionId: question.id, label: question.shortLabel, points: 0, maxPoints, status: "miss" };
   }
 
+  if (question.type === "text") {
+    const hit = normalizeText(String(guess)) === normalizeText(String(actual));
+    return { questionId: question.id, label: question.shortLabel, points: hit ? maxPoints : 0, maxPoints, status: hit ? "hit" : "miss" };
+  }
+
   const hit = String(guess) === String(actual);
   return { questionId: question.id, label: question.shortLabel, points: hit ? maxPoints : 0, maxPoints, status: hit ? "hit" : "miss" };
 }
@@ -401,8 +357,22 @@ function scoreFinalScore(question: Question, guess: string, actual: string): Sco
 }
 
 function resultDirection(score: string) {
-  const [home, away] = score.split("-").map(Number);
+  const [home, away] = score.split("-").map(parseScorePart);
   if (!Number.isFinite(home) || !Number.isFinite(away)) return null;
   if (home === away) return "draw";
   return home > away ? "norway" : "england";
+}
+
+function parseScorePart(value: string) {
+  return Number(value.replace("+", ""));
+}
+
+function normalizeText(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9æøå ]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
