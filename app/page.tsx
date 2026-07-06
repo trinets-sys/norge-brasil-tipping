@@ -176,8 +176,8 @@ export default function Home() {
               Norge - England
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/86">
-              Legg inn kampens beste spådommer før klokken 23.00. Når kampen starter låses tipsene,
-              og poengtavlen oppdateres etter hvert som fasiten fylles inn.
+              Legg inn kampens beste spådommer og litt landslagshistorikk før klokken 23.00.
+              Når kampen starter låses tipsene, og poengtavlen oppdateres etter hvert som fasiten fylles inn.
             </p>
           </div>
 
@@ -259,7 +259,7 @@ export default function Home() {
           <section className="rounded-lg border border-[#d6d0bf] bg-[#fffaf0] p-4 shadow-sm sm:p-5">
             <h2 className="text-xl font-bold">Fasit underveis</h2>
             <p className="mt-2 text-sm leading-6 text-[#615f59]">
-              Legg inn bare det som er avgjort. Tomme felt holdes utenfor poengberegningen.
+              Legg inn bare det som er avgjort. Historie-spørsmålene kan fylles inn med fasit med en gang.
             </p>
 
             <form onSubmit={submitResults} className="mt-5 grid gap-4">
