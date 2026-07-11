@@ -27,6 +27,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingResults, setSavingResults] = useState(false);
+  const [resultsDirty, setResultsDirty] = useState(false);
   const [now, setNow] = useState(() => Date.now());
 
   const locked = state?.locked ?? now >= new Date(DEADLINE_ISO).getTime();
@@ -72,10 +73,10 @@ export default function Home() {
   }, [participantId, state]);
 
   useEffect(() => {
-    if (state?.results) {
+    if (state?.results && !resultsDirty && !savingResults) {
       window.setTimeout(() => setResults({ ...emptyAnswers(), ...state.results }), 0);
     }
-  }, [state?.results]);
+  }, [resultsDirty, savingResults, state?.results]);
 
   async function refreshState() {
     try {
@@ -132,6 +133,7 @@ export default function Home() {
       return;
     }
 
+    setResultsDirty(false);
     setAdminMessage("Fasit er oppdatert. Tabellen regnes om nå.");
     await refreshState();
   }
@@ -148,6 +150,7 @@ export default function Home() {
       setName("");
       setAnswers(emptyAnswers());
       setResults(emptyAnswers());
+      setResultsDirty(false);
       setAdminMessage("Alt er nullstilt.");
       await refreshState();
     } else {
@@ -281,7 +284,10 @@ export default function Home() {
                   disabled={false}
                   compact
                   allowBlank
-                  onChange={(value) => setResults((current) => ({ ...current, [question.id]: value }))}
+                  onChange={(value) => {
+                    setResultsDirty(true);
+                    setResults((current) => ({ ...current, [question.id]: value }));
+                  }}
                 />
               ))}
 
